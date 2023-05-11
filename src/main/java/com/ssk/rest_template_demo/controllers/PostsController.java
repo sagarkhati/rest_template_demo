@@ -50,4 +50,11 @@ public class PostsController {
 		return responseEntity.getBody();
 	}
 
+	@GetMapping("/posts-object/{id}")
+	public Posts getPost2(@PathVariable int id) {
+		Posts object = restTemplate.getForObject("https://jsonplaceholder.typicode.com/posts/{id}", Posts.class, id);
+
+		return object;
+	}
+
 }
