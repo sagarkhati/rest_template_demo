@@ -1,5 +1,7 @@
 package com.ssk.rest_template_demo.controllers;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,12 +9,14 @@ import java.util.Map;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.ssk.rest_template_demo.models.Posts;
 
@@ -142,6 +146,34 @@ public class PostsController {
 		ResponseEntity<Posts[]> responseEntity = restTemplate.exchange("https://jsonplaceholder.typicode.com/posts",
 				HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<Posts[]>() {
 				});
+
+		return responseEntity.getBody();
+	}
+
+	@GetMapping("/posts-exchange-req-entity/{id}")
+	public Posts getPostExchangeWithRequestEntity(@PathVariable int id) {
+		Map<String, Integer> uriVariables = new HashMap<String, Integer>();
+		uriVariables.put("id", id);
+
+		URI uri = UriComponentsBuilder.fromUriString("https://jsonplaceholder.typicode.com/posts/{id}")
+				.buildAndExpand(uriVariables).toUri();
+
+		RequestEntity<Posts> entity = new RequestEntity<>(HttpMethod.GET, uri);
+
+		ResponseEntity<Posts> responseEntity = restTemplate.exchange(entity, Posts.class);
+
+		return responseEntity.getBody();
+	}
+
+	@GetMapping("/posts-exchange-req-entity")
+	public Posts[] getAllPosts6() {
+		RequestEntity<Posts[]> entity = null;
+		try {
+			entity = new RequestEntity<>(HttpMethod.GET, new URI("https://jsonplaceholder.typicode.com/posts"));
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		ResponseEntity<Posts[]> responseEntity = restTemplate.exchange(entity, Posts[].class);
 
 		return responseEntity.getBody();
 	}
