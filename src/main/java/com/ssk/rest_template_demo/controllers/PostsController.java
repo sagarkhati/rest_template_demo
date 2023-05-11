@@ -57,4 +57,14 @@ public class PostsController {
 		return object;
 	}
 
+	@GetMapping("/posts-object-using-map/{id}")
+	public Posts getPostUsingMap2(@PathVariable int id) {
+		Map<String, Integer> uriVariables = new HashMap<String, Integer>();
+		uriVariables.put("id", id);
+
+		Posts object = restTemplate.getForObject("https://jsonplaceholder.typicode.com/posts/{id}", Posts.class,
+				uriVariables);
+
+		return object;
+	}
 }
