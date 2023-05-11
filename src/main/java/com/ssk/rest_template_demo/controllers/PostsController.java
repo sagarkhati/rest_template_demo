@@ -41,4 +41,13 @@ public class PostsController {
 
 		return responseEntity.getBody();
 	}
+
+	@GetMapping("/posts")
+	public Posts[] getAllPosts() {
+		ResponseEntity<Posts[]> responseEntity = restTemplate.getForEntity("https://jsonplaceholder.typicode.com/posts",
+				Posts[].class);
+
+		return responseEntity.getBody();
+	}
+
 }
