@@ -1,6 +1,7 @@
 package com.ssk.rest_template_demo.controllers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.core.ParameterizedTypeReference;
@@ -115,6 +116,32 @@ public class PostsController {
 
 		ResponseEntity<Posts> responseEntity = restTemplate.exchange("https://jsonplaceholder.typicode.com/posts/{id}",
 				HttpMethod.GET, HttpEntity.EMPTY, typeReference, uriVariables);
+
+		return responseEntity.getBody();
+	}
+
+	@GetMapping("/posts-exchange")
+	public Posts[] getAllPosts3() {
+		ResponseEntity<Posts[]> responseEntity = restTemplate.exchange("https://jsonplaceholder.typicode.com/posts",
+				HttpMethod.GET, HttpEntity.EMPTY, Posts[].class);
+
+		return responseEntity.getBody();
+	}
+
+	@GetMapping("/posts-exchange-typeref-list")
+	public List<Posts> getAllPosts4() {
+		ResponseEntity<List<Posts>> responseEntity = restTemplate.exchange("https://jsonplaceholder.typicode.com/posts",
+				HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<List<Posts>>() {
+				});
+
+		return responseEntity.getBody();
+	}
+
+	@GetMapping("/posts-exchange-typeref-array")
+	public Posts[] getAllPosts5() {
+		ResponseEntity<Posts[]> responseEntity = restTemplate.exchange("https://jsonplaceholder.typicode.com/posts",
+				HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<Posts[]>() {
+				});
 
 		return responseEntity.getBody();
 	}
