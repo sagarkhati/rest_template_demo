@@ -67,4 +67,11 @@ public class PostsController {
 
 		return object;
 	}
+
+	@GetMapping("/posts-object")
+	public Posts[] getAllPosts2() {
+		Posts[] object = restTemplate.getForObject("https://jsonplaceholder.typicode.com/posts", Posts[].class);
+
+		return object;
+	}
 }
