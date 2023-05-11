@@ -3,6 +3,9 @@ package com.ssk.rest_template_demo.controllers;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -73,5 +76,46 @@ public class PostsController {
 		Posts[] object = restTemplate.getForObject("https://jsonplaceholder.typicode.com/posts", Posts[].class);
 
 		return object;
+	}
+
+	@GetMapping("/posts-exchange-object/{id}")
+	public Posts getPostUsingExchange(@PathVariable int id) {
+		ResponseEntity<Posts> responseEntity = restTemplate.exchange("https://jsonplaceholder.typicode.com/posts/{id}",
+				HttpMethod.GET, HttpEntity.EMPTY, Posts.class, id);
+
+		return responseEntity.getBody();
+	}
+
+	@GetMapping("/posts-exchange-map/{id}")
+	public Posts getPostUsingExchangeWithMap(@PathVariable int id) {
+		Map<String, Integer> uriVariables = new HashMap<String, Integer>();
+		uriVariables.put("id", id);
+		ResponseEntity<Posts> responseEntity = restTemplate.exchange("https://jsonplaceholder.typicode.com/posts/{id}",
+				HttpMethod.GET, HttpEntity.EMPTY, Posts.class, uriVariables);
+
+		return responseEntity.getBody();
+	}
+
+	@GetMapping("/posts-exchange-object-typeref/{id}")
+	public Posts getPostUsingExchangeWithObjectWithParamClassRef(@PathVariable int id) {
+		ResponseEntity<Posts> responseEntity = restTemplate.exchange("https://jsonplaceholder.typicode.com/posts/{id}",
+				HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<Posts>() {
+				}, id);
+
+		return responseEntity.getBody();
+	}
+
+	@GetMapping("/posts-exchange-map-typeref/{id}")
+	public Posts getPostUsingExchangeWithMapWithParamClassRef(@PathVariable int id) {
+		ParameterizedTypeReference<Posts> typeReference = new ParameterizedTypeReference<Posts>() {
+		};
+
+		Map<String, Integer> uriVariables = new HashMap<String, Integer>();
+		uriVariables.put("id", id);
+
+		ResponseEntity<Posts> responseEntity = restTemplate.exchange("https://jsonplaceholder.typicode.com/posts/{id}",
+				HttpMethod.GET, HttpEntity.EMPTY, typeReference, uriVariables);
+
+		return responseEntity.getBody();
 	}
 }
